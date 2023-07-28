@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Math Solver</title>
+
+	<style>
+
+		body {
+			font-family: Courier New, Courier, monospace, Arial, sans-serif;
+			margin: 30px;
+			background-color: #070f07;
+		}
+
+		h1 {
+			font-size: 30px;
+			color: #ff8c00;
+			text-align: center;
+			margin-bottom: 20px;
+		}
+		
+		h3 {
+			font-size: 14px;
+			font-weight: lighter;
+			color: #ff8c00;
+			text-align: center;
+			margin-bottom: 20px;
+		}
+
+		.button-container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 10px;
+			margin-bottom: 20px;
+		}
+
+		button {
+			padding: 10px 20px;
+			background-color: #ff8c00;
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-weight: bold;
+			transition: background-color 0.3s;
+			margin: 5px;
+		}
+
+		button:hover {
+			background-color: #ad6103;
+		}
+
+		form {
+			display: none;
+			flex-direction: column;
+			max-width: 400px;
+			margin: 10px auto;
+			padding: 20px;
+			border: 1px solid #ad6103;
+			border-radius: 10px;
+			background-color: #ff8c00;
+			margin-bottom: 20px;
+		}
+
+		form.show {
+			display: flex;
+		}
+
+		label {
+			margin-bottom: 10px;
+			font-weight: bold;
+		}
+
+		input[type="text"],
+		input[type="number"] {
+			padding: 8px;
+			margin-bottom: 15px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+
+		input[type="submit"] {
+			padding: 10px;
+			background-color: #0d120e;
+			color: #ff8c00;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-weight: bold;
+			transition: 0.3s;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #ad6103;
+			color: #fff;
+		}
+
+		p.result {
+			font-weight: bold;
+			margin-top: 10px;
+		}
+
+		.result-container {
+			max-width: 400px;
+			margin: 0 auto;
+			padding: 20px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			background-color: #f9f9f9;
+			margin-top: 30px;
+		}
+
+		.category {
+			text-align: center;
+			font-weight: bold;
+			text-transform: uppercase;
+			margin-bottom: 10px;
+		}
+
+		.error-message {
+			color: red;
+			margin-top: 10px;
+		}
+
+		footer {
+			text-align: center;
+			margin-top: 20px;
+			padding: 10px 0;
+			color: #ff8c00;
+			font-size: 14px;
+		}
+		
+		a:link {
+			color: white;
+			text-decoration: none;
+		}
+		
+		a:visited {
+			color: white;
+		}
+		
+		a:active {
+			color: yellow;
+		}
+		
+		a:hover{
+			color: #f6ff00;
+			transition: 0.7s;
+		}
+
+		button.active {
+			background-color: #0056b3;
+			color: #fff;
+		}
+
+		/* Responsive styles */
+		@media only screen and (max-width: 600px) {
+			.button-container {
+				flex-direction: column;
+				align-items: center;
+			}
+
+			.button-container button {
+				margin: 5px;
+			}
+		}
+
+	</style>
+
+    <script>
+	
+		// Function to toggle visibility of forms and result container
+        function showForm(formId) {
+            const forms = document.querySelectorAll("form");
+            forms.forEach((form) => {
+                if (form.id === formId) {
+                    form.classList.add("show");
+                } else {
+                    form.classList.remove("show");
+                }
+            });
+        }
+
+		// Function to show the lower and upper limit fields when definite integration is selected
+        function showDefiniteLimits() {
+            const definiteForm = document.getElementById("definite-integrate-form");
+            const definiteRadio = document.getElementById("definite-radio");
+            if (definiteRadio.checked) {
+                definiteForm.style.display = "flex";
+            } else {
+                definiteForm.style.display = "none";
+            }
+        }
+		
+    </script>
+
+</head>
+
+<body>
+    <h1>~solve_init</h1>
+	<h3># trigonometry, solutions with steps, help_page, and lot of other is loading ...</h3>
+
+    <!-- Buttons to select the desired form -->
+    <button onclick="showForm('integrate-form')">Integrate</button>
+    <button onclick="showForm('definite-integrate-form')">Definite Integration</button>
+    <button onclick="showForm('area-by-definite-integrate-form')">Area by Integration</button>
+    <button onclick="showForm('differentiate-form')">Differentiate</button>
+    <button onclick="showForm('maclaurin-theorem-form')">Maclaurin's Theorem</button>
+    <button onclick="showForm('implicit-differentiate-form')">Implicit Derivative</button>
+    <button onclick="showForm('limit-form')">Limit</button>
+    <button onclick="showForm('equation-form')">Solve Equation</button>
+    <button onclick="showForm('probability-form')">Calculate Probability</button>
+    <button onclick="showForm('distance-form')">Calculate Distance</button>
+    <button onclick="showForm('circle-area-form')">Calculate Circle Area</button>
+    <button onclick="showForm('slope-form')">Calculate Slope</button>
+    <button onclick="showForm('midpoint-form')">Calculate Midpoint</button>
+    <button onclick="showForm('triangle-area-form')">Calculate Triangle Area</button>
+    <button onclick="showForm('collinear-form')">Check Collinear</button>
+    <button onclick="showForm('concyclic-form')">Check Concyclic</button>
+
+    <!-- Form for Indefinite Integration -->
+    <form id="integrate-form" class="form-container show" action="/calculate_indefinite_integration" method="post">
+        <label for="indefinite-integrate-expression">Enter the expression to integrate:</label>
+        <input type="text" name="expression" id="indefinite-integrate-expression" required>
+        <label for="indefinite-integrate-variable">Enter the variable of integration:</label>
+        <input type="text" name="variable" id="indefinite-integrate-variable" required>
+        <input type="submit" value="Calculate Indefinite Integration">
+    </form>
+
+    <!-- Form for Definite Integration -->
+    <form id="definite-integrate-form" class="form-container" action="/calculate_definite_integration" method="post">
+        <label for="definite-integrate-expression">Enter the expression to integrate:</label>
+        <input type="text" name="expression" id="definite-integrate-expression" required>
+        <label for="definite-integrate-variable">Enter the variable of integration:</label>
+        <input type="text" name="variable" id="definite-integrate-variable" required>
+        <label for="definite-integrate-lower-limit">Enter the lower limit:</label>
+        <input type="number" name="lower_limit" id="definite-integrate-lower-limit" step="0.01" required>
+        <label for="definite-integrate-upper-limit">Enter the upper limit:</label>
+        <input type="number" name="upper_limit" id="definite-integrate-upper-limit" step="0.01" required>
+        <input type="submit" value="Calculate Definite Integration">
+    </form>
+
+    <!-- Form for Area by Definite Integration -->
+    <form id="area-by-definite-integrate-form" class="form-container" action="/calculate_area_by_definite_integration" method="post">
+        <label for="area-by-definite-integrate-expression">Enter the expression to integrate:</label>
+        <input type="text" name="expression" id="area-by-definite-integrate-expression" required>
+        <label for="area-by-definite-integrate-variable">Enter the variable of integration:</label>
+        <input type="text" name="variable" id="area-by-definite-integrate-variable" required>
+        <label for="area-by-definite-integrate-lower-limit">Enter the lower limit:</label>
+        <input type="number" name="lower_limit" id="area-by-definite-integrate-lower-limit" step="0.01" required>
+        <label for="area-by-definite-integrate-upper-limit">Enter the upper limit:</label>
+        <input type="number" name="upper_limit" id="area-by-definite-integrate-upper-limit" step="0.01" required>
+        <input type="submit" value="Calculate Area by Definite Integration">
+    </form>
+
+    <!-- Form for Differentiation -->
+    <form id="differentiate-form" action="/differentiate" method="post">
+        <label for="differentiate-expression">Enter a function to differentiate:</label>
+        <input type="text" name="expression" id="differentiate-expression" required>
+        <label for="differentiate-variable">Enter the variable of differentiation:</label>
+        <input type="text" name="variable" id="differentiate-variable" required>
+        <input type="submit" value="Differentiate">
+    </form>
+
+    <form id="maclaurin-theorem-form" action="/maclaurin-theorem" method="post">
+        <label for="maclaurin-theorem-expression">Enter the function:</label>
+        <input type="text" name="expression" id="maclaurin-theorem-expression" required>
+        <label for="maclaurin-theorem-variable">Enter the variable:</label>
+        <input type="text" name="variable" id="maclaurin-theorem-variable" required>
+        <label for="maclaurin-theorem-order">Enter the order (degree):</label>
+        <input type="number" name="order" id="maclaurin-theorem-order" required>
+        <input type="submit" value="Calculate Maclaurin's Theorem">
+    </form>
+
+    <form id="implicit-differentiate-form" action="/implicit-differentiate" method="post">
+        <label for="implicit-differentiate-expression">Enter the implicit function:</label>
+        <input type="text" name="expression" id="implicit-differentiate-expression" required>
+        <label for="implicit-differentiate-variable">Enter the variable:</label>
+        <input type="text" name="variable" id="implicit-differentiate-variable" required>
+        <input type="submit" value="Calculate Implicit Derivative">
+    </form>
+
+
+    <!-- Form for Limit -->
+    <form id="limit-form" action="/limit" method="post">
+        <label for="limit-expression">Enter the expression:</label>
+        <input type="text" name="expression" id="limit-expression" required>
+        <label for="limit-variable">Enter the variable:</label>
+        <input type="text" name="variable" id="limit-variable" required>
+        <label for="limit-value">Enter the value:</label>
+        <input type="number" name="value" id="limit-value" step="0.01" required>
+        <input type="submit" value="Calculate Limit">
+    </form>
+
+    <!-- Form for Equation -->
+    <form id="equation-form" action="/equation" method="post">
+        <label for="equation-expression">Enter an equation to solve:</label>
+        <input type="text" name="expression" id="equation-expression" required>
+        <label for="equation-variable">Enter the variable to solve for:</label>
+        <input type="text" name="variable" id="equation-variable" required>
+        <input type="submit" value="Solve Equation">
+    </form>
+
+    <!-- Form for Probability -->
+    <form id="probability-form" action="/probability" method="post">
+        <label for="probability-space">Enter the probability space:</label>
+        <input type="number" name="probability_space" id="probability-space" step="0.01" required>
+        <label for="event">Enter the event probability:</label>
+        <input type="number" name="event" id="event" step="0.01" required>
+        <input type="submit" value="Calculate Probability">
+    </form>
+
+    <!-- Form for Distance -->
+    <form id="distance-form" action="/distance" method="post">
+        <label for="x1">Enter x-coordinate for point 1:</label>
+        <input type="number" name="x1" id="x1" step="0.01" required>
+        <label for="y1">Enter y-coordinate for point 1:</label>
+        <input type="number" name="y1" id="y1" step="0.01" required>
+        <label for="x2">Enter x-coordinate for point 2:</label>
+        <input type="number" name="x2" id="x2" step="0.01" required>
+        <label for="y2">Enter y-coordinate for point 2:</label>
+        <input type="number" name="y2" id="y2" step="0.01" required>
+        <input type="submit" value="Calculate Distance">
+    </form>
+
+    <!-- Form for Circle Area -->
+    <form id="circle-area-form" action="/circle_area" method="post">
+        <label for="radius">Enter the radius of the circle:</label>
+        <input type="number" name="radius" id="radius" step="0.01" required>
+        <input type="submit" value="Calculate Circle Area">
+    </form>
+
+    <!-- Form for Slope -->
+    <form id="slope-form" action="/slope" method="post">
+        <label for="slope-x1">Enter x-coordinate for point 1:</label>
+        <input type="number" name="x1" id="slope-x1" step="0.01" required>
+        <label for="slope-y1">Enter y-coordinate for point 1:</label>
+        <input type="number" name="y1" id="slope-y1" step="0.01" required>
+        <label for="slope-x2">Enter x-coordinate for point 2:</label>
+        <input type="number" name="x2" id="slope-x2" step="0.01" required>
+        <label for="slope-y2">Enter y-coordinate for point 2:</label>
+        <input type="number" name="y2" id="slope-y2" step="0.01" required>
+        <input type="submit" value="Calculate Slope">
+    </form>
+
+    <!-- Form for Midpoint -->
+    <form id="midpoint-form" action="/midpoint" method="post">
+        <label for="midpoint-x1">Enter x-coordinate for point 1:</label>
+        <input type="number" name="x1" id="midpoint-x1" step="0.01" required>
+        <label for="midpoint-y1">Enter y-coordinate for point 1:</label>
+        <input type="number" name="y1" id="midpoint-y1" step="0.01" required>
+        <label for="midpoint-x2">Enter x-coordinate for point 2:</label>
+        <input type="number" name="x2" id="midpoint-x2" step="0.01" required>
+        <label for="midpoint-y2">Enter y-coordinate for point 2:</label>
+        <input type="number" name="y2" id="midpoint-y2" step="0.01" required>
+        <input type="submit" value="Calculate Midpoint">
+    </form>
+
+    <!-- Form for Triangle Area -->
+    <form id="triangle-area-form" action="/triangle_area" method="post">
+        <label for="triangle-x1">Enter x-coordinate for vertex 1:</label>
+        <input type="number" name="x1" id="triangle-x1" step="0.01" required>
+        <label for="triangle-y1">Enter y-coordinate for vertex 1:</label>
+        <input type="number" name="y1" id="triangle-y1" step="0.01" required>
+        <label for="triangle-x2">Enter x-coordinate for vertex 2:</label>
+        <input type="number" name="x2" id="triangle-x2" step="0.01" required>
+        <label for="triangle-y2">Enter y-coordinate for vertex 2:</label>
+        <input type="number" name="y2" id="triangle-y2" step="0.01" required>
+        <label for="triangle-x3">Enter x-coordinate for vertex 3:</label>
+        <input type="number" name="x3" id="triangle-x3" step="0.01" required>
+        <label for="triangle-y3">Enter y-coordinate for vertex 3:</label>
+        <input type="number" name="y3" id="triangle-y3" step="0.01" required>
+        <input type="submit" value="Calculate Triangle Area">
+    </form>
+
+    <!-- Form for Collinear -->
+    <form id="collinear-form" action="/collinear" method="post">
+        <label for="collinear-x1">Enter x-coordinate for point 1:</label>
+        <input type="number" name="x1" id="collinear-x1" step="0.01" required>
+        <label for="collinear-y1">Enter y-coordinate for point 1:</label>
+        <input type="number" name="y1" id="collinear-y1" step="0.01" required>
+        <label for="collinear-x2">Enter x-coordinate for point 2:</label>
+        <input type="number" name="x2" id="collinear-x2" step="0.01" required>
+        <label for="collinear-y2">Enter y-coordinate for point 2:</label>
+        <input type="number" name="y2" id="collinear-y2" step="0.01" required>
+        <label for="collinear-x3">Enter x-coordinate for point 3:</label>
+        <input type="number" name="x3" id="collinear-x3" step="0.01" required>
+        <label for="collinear-y3">Enter y-coordinate for point 3:</label>
+        <input type="number" name="y3" id="collinear-y3" step="0.01" required>
+        <input type="submit" value="Check Collinear">
+    </form>
+
+    <!-- Form for Concyclic -->
+    <form id="concyclic-form" action="/concyclic" method="post">
+        <label for="concyclic-x1">Enter x-coordinate for point 1:</label>
+        <input type="number" name="x1" id="concyclic-x1" step="0.01" required>
+        <label for="concyclic-y1">Enter y-coordinate for point 1:</label>
+        <input type="number" name="y1" id="concyclic-y1" step="0.01" required>
+        <label for="concyclic-x2">Enter x-coordinate for point 2:</label>
+        <input type="number" name="x2" id="concyclic-x2" step="0.01" required>
+        <label for="concyclic-y2">Enter y-coordinate for point 2:</label>
+        <input type="number" name="y2" id="concyclic-y2" step="0.01" required>
+        <label for="concyclic-x3">Enter x-coordinate for point 3:</label>
+        <input type="number" name="x3" id="concyclic-x3" step="0.01" required>
+        <label for="concyclic-y3">Enter y-coordinate for point 3:</label>
+        <input type="number" name="y3" id="concyclic-y3" step="0.01" required>
+        <input type="submit" value="Check Concyclic">
+    </form>
+
+    <!-- Result container -->
+    <div class="result-container">
+        <p class="category">Result</p>
+        <p class="result">{{ result }}</p>
+        <p class="error-message">{{ error_message }}</p>
+    </div>
+
+    <footer>
+        &copy; 2023, <a href="https://github.com/mdrahman04" target="blank">mdrahman04</a>. All Rights Reserved.<br>
+        solve_init by Mohammed Mahir Rahman.<br>solve_init is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="blank">Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+    </footer>
+
+</body>
+</html>
