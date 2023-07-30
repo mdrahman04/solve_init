@@ -2,6 +2,14 @@
 <html>
 <head>
     <title>Your Math Solver</title>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<meta property="og:image" content="logo.png" />
+	<meta property="og:image:secure_url" content="logo.png" />
+	<meta property="og:image:type" content="image/png" />
+	<meta property="og:image:width" content="423" />
+	<meta property="og:image:height" content="314" />
 
 	<style>
 
@@ -61,6 +69,18 @@
 			background-color: #ff8c00;
 			margin-bottom: 20px;
 		}
+		
+		.form-container1 {
+			display: none;
+			flex-direction: column;
+			max-width: 1000px;
+			margin: 10px auto;
+			padding: 20px;
+			border: 1px solid #ad6103;
+			border-radius: 10px;
+			background-color: white;
+			margin-bottom: 20px;
+		}
 
 		form.show {
 			display: flex;
@@ -101,13 +121,14 @@
 		}
 
 		.result-container {
-			max-width: 400px;
+			font-size: 15px;
+			max-width: 100%;
 			margin: 0 auto;
-			padding: 20px;
+			padding: 10px;
 			border: 1px solid #ccc;
 			border-radius: 5px;
 			background-color: #f9f9f9;
-			margin-top: 30px;
+			margin-top: 20px;
 		}
 
 		.category {
@@ -149,10 +170,15 @@
 		}
 
 		button.active {
-			background-color: #0056b3;
+			background-color: #ad6103;
 			color: #fff;
 		}
+		
+		button, input, select, textarea {
+			-webkit-tap-highlight-color: transparent;
+		}
 
+		
 		/* Responsive styles */
 		@media only screen and (max-width: 600px) {
 			.button-container {
@@ -163,8 +189,16 @@
 			.button-container button {
 				margin: 5px;
 			}
-		}
-
+			.result-container {
+				padding: 5px;
+			}
+			.result-container p {
+				font-size: 13px;
+			}
+			input[type="text"],
+			input[type="number"] {
+				width: auto;
+			}
 	</style>
 
     <script>
@@ -172,6 +206,8 @@
 		// Function to toggle visibility of forms and result container
         function showForm(formId) {
             const forms = document.querySelectorAll("form");
+			const buttons = document.querySelectorAll("button");
+			
             forms.forEach((form) => {
                 if (form.id === formId) {
                     form.classList.add("show");
@@ -179,6 +215,13 @@
                     form.classList.remove("show");
                 }
             });
+			
+			buttons.forEach((button) => {
+				if (button.getAttribute("onclick") === `showForm('${formId}')`) { button.classList.add("active");
+				} else { 
+					button.classList.remove("active");
+				}
+			});
         }
 
 		// Function to show the lower and upper limit fields when definite integration is selected
@@ -198,9 +241,12 @@
 
 <body>
     <h1>~solve_init</h1>
-	<h3># trigonometry, solutions with steps, help_page, and lot of other is loading ...</h3>
+	<h3># trigonometry, solutions with steps, and lot of other is loading ...</h3>
+	
+	<h3># do have some basic knowledge though...</h3>
 
     <!-- Buttons to select the desired form -->
+	<button onclick="showForm('help-id')">~ help</button>
     <button onclick="showForm('integrate-form')">Integrate</button>
     <button onclick="showForm('definite-integrate-form')">Definite Integration</button>
     <button onclick="showForm('area-by-definite-integrate-form')">Area by Integration</button>
@@ -217,7 +263,46 @@
     <button onclick="showForm('triangle-area-form')">Calculate Triangle Area</button>
     <button onclick="showForm('collinear-form')">Check Collinear</button>
     <button onclick="showForm('concyclic-form')">Check Concyclic</button>
-
+	
+	<!--help-->
+	<form id="help-id" class="form-container1" method="post">
+		
+		
+		<span style="color:#ff8c00; font-weight: 1000;">
+			
+			Functions Available:<br><br>
+			~ integration (indefinite)<br>
+			~ definite integration<br>
+			~ area by integration (definite)<br>
+			~ differentiate<br>
+			~ maclaurins's theorem<br>
+			~ implicit differentiation<br>
+			~ limit<br>
+			~ equations<br>
+			~ probability<br>
+			~ distance (lines)<br>
+			~ circular area<br>
+			~ calculate slope<br>
+			~ midpoint (lines)<br>
+			~ triangular area<br>
+			~ checking collinear<br>
+			~ checking concyclic<br>
+			~ ... to be added<br><br>		
+			
+			instructions:<br><br>
+			
+			0. Always use "()" parentheses for avoiding syntax errors. There is no "{}" or square brackets, rather use ((...)).<br><br>
+			1. Exponentiation: Instead of using the caret (^) symbol for exponentiation, use the double asterisk (**) operator. For example, x^2 should be written as x**2.<br><br>
+			2. Multiplication: Explicitly use the asterisk (*) for multiplication. For example, 2x should be written as 2*x.<br><br>
+			3. Function Calls: Use parentheses () when calling functions. For example, to evaluate a trigonometric function, write sin(x) instead of sin x.<br><br>
+			4. Fractions: For fractions, use the Sympy Rational class or the / operator. For example, 1/3.<br><br>
+			5. Square Roots: To represent square roots, use the sqrt() function. For example, the square root of x should be written as sqrt(x). Or (x)**(1/2) could also be used.<br><br>
+			6. Constants: Use the appropriate Sympy constants, such as pi, E, and oo (infinity), instead of manually entering their values.<br><br>
+			7. Symbols: Define symbols using the Symbol() function before using them in expressions. For example, x = Symbol('x') declares x as a symbol.<br><br>
+			8. Solving Equations: While, using Equation solving functions do not write the right hand sides as "ax+b=0" just write "ax+b". For "ax+b=c" write "ax+b-c".<br><br>
+		</span>
+	</form>
+	
     <!-- Form for Indefinite Integration -->
     <form id="integrate-form" class="form-container show" action="/calculate_indefinite_integration" method="post">
         <label for="indefinite-integrate-expression">Enter the expression to integrate:</label>
@@ -406,14 +491,14 @@
         <input type="number" name="y3" id="concyclic-y3" step="0.01" required>
         <input type="submit" value="Check Concyclic">
     </form>
-
+	
     <!-- Result container -->
     <div class="result-container">
         <p class="category">Result</p>
         <p class="result">{{ result }}</p>
         <p class="error-message">{{ error_message }}</p>
     </div>
-
+	
     <footer>
         &copy; 2023, <a href="https://github.com/mdrahman04" target="blank">mdrahman04</a>. All Rights Reserved.<br>
         solve_init by Mohammed Mahir Rahman.<br>solve_init is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="blank">Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
